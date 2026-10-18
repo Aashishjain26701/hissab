@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f5ef">
+  <title>AHARIVA Hissab</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div id="login-screen" class="login-screen hidden">
+    <form id="login-form" class="login-card">
+      <div class="brand-mark">A</div>
+      <p class="eyebrow">AHARIVA NUTS</p>
+      <h1>Your books, in one place.</h1>
+      <p class="muted">Sign in to manage sales, purchases, stock and cashflow.</p>
+      <label for="password">App password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <button class="button primary wide" type="submit">Sign in</button>
+      <p id="login-error" class="error-text"></p>
+    </form>
+  </div>
+
+  <div id="app-shell" class="app-shell hidden">
+    <aside class="sidebar">
+      <a class="brand" href="#">
+        <span class="brand-mark">A</span>
+        <span><strong>AHARIVA</strong><small>HISSAB BOOK</small></span>
+      </a>
+      <p class="nav-label">WORKSPACE</p>
+      <nav>
+        <a class="nav-link active" href="#overview"><span>◫</span> Overview</a>
+        <a class="nav-link" href="#inventory"><span>▦</span> Inventory</a>
+        <a class="nav-link" href="#transactions"><span>⇄</span> Transactions</a>
+        <a class="nav-link" href="#accounts"><span>▤</span> Accounts & partners</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="side-note"><span class="status-dot"></span><div><strong>Books are local</strong><small>Your data is stored in this app's database.</small></div></div>
+        <button id="logout-button" class="nav-link logout"><span>↪</span> Sign out</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">AHARIVA NUTS <span>/</span> FINANCE</p>
+          <h1>Business overview</h1>
+        </div>
+        <div class="top-actions">
+          <span class="today" id="today-label"></span>
+          <a class="button outline" href="/api/export">↓ <span>Export CSV</span></a>
+          <button class="button primary" id="new-entry-button">＋ <span>New entry</span></button>
+        </div>
+      </header>
+
+      <section id="overview" class="page-section">
+        <div class="welcome-row">
+          <div><h2>Here’s how the business is doing.</h2><p class="muted">A live view of your books and stock position.</p></div>
+          <span id="period-label" class="period-chip">This month</span>
+        </div>
+        <div class="metric-grid">
+          <article class="metric-card metric-green">
+            <div class="metric-label">Sales revenue <span>↗</span></div>
+            <strong id="metric-revenue">₹0</strong>
+            <small id="metric-month-revenue">₹0 this month</small>
+          </article>
+          <article class="metric-card">
+            <div class="metric-label">Operating profit <span>◈</span></div>
+            <strong id="metric-profit">₹0</strong>
+            <small>After stock cost and expenses</small>
+          </article>
+          <article class="metric-card">
+            <div class="metric-label">Inventory value <span>▦</span></div>
+            <strong id="metric-inventory">₹0</strong>
+            <small id="metric-units">0 units in stock</small>
+          </article>
+          <article class="metric-card metric-sand">
+            <div class="metric-label">Estimated GST position <span>◎</span></div>
+            <strong id="metric-gst">₹0</strong>
+            <small id="gst-subtitle">Net output GST less eligible input GST</small>
+          </article>
+        </div>
+
+        <div class="content-grid">
+          <section class="panel account-panel" id="accounts">
+            <div class="panel-heading"><div><h2>Money & accounts</h2><p class="muted">Balances from your opening amounts and recorded entries.</p></div><button class="text-button" id="opening-balance-button">Set opening balance</button></div>
+            <div id="account-list" class="account-list"></div>
+            <div class="gst-callout"><span class="callout-icon">i</span><p><strong>GST is an estimate, not tax advice.</strong> GST Reserve is a real account balance. The estimated GST position is calculated from recorded sales and eligible input tax; review returns, invoices and filings with your accountant before transferring or filing.</p></div>
+          </section>
+          <section class="panel performance-panel">
+            <div class="panel-heading"><div><h2>Cashflow snapshot</h2><p class="muted">Recorded business activity this month.</p></div><span class="spark-icon">⌁</span></div>
+            <div class="cashflow-numbers">
+              <div><span>Revenue</span><strong id="month-sales">₹0</strong></div>
+              <div><span>Expenses</span><strong id="month-expenses">₹0</strong></div>
+              <div><span>Gross profit</span><strong id="gross-profit">₹0</strong></div>
+            </div>
+            <div class="performance-foot"><span class="status-dot"></span> Inventory cost is recognised when items are sold.</div>
+          </section>
+        </div>
+      </section>
+
+      <section id="inventory" class="panel table-panel page-section">
+        <div class="panel-heading"><div><h2>Inventory</h2><p class="muted">Stock on hand and average cost by product.</p></div><button class="button outline small" id="add-product-button">＋ Add product</button></div>
+        <div class="table-scroll"><table><thead><tr><th>PRODUCT</th><th>SKU</th><th>IN STOCK</th><th>AVG. COST</th><th>SELL PRICE</th><th>GST</th></tr></thead><tbody id="product-table"></tbody></table></div>
+      </section>
+
+      <section id="transactions" class="panel table-panel page-section">
+        <div class="panel-heading"><div><h2>Recent activity</h2><p class="muted">Your latest purchases, sales, returns and expenses.</p></div><a class="text-button" href="/api/export">Download all entries ↗</a></div>
+        <div class="table-scroll"><table><thead><tr><th>ENTRY</th><th>TYPE</th><th>DATE</th><th>CHANNEL / CATEGORY</th><th>AMOUNT</th></tr></thead><tbody id="transaction-table"></tbody></table></div>
+      </section>
+
+      <section class="panel partner-panel page-section">
+        <div class="panel-heading"><div><h2>Partner capital</h2><p class="muted">Contributions minus withdrawals recorded for each partner.</p></div></div>
+        <div id="partner-list" class="partner-list"><p class="empty-state">Record a partner contribution or withdrawal to see balances.</p></div>
+      </section>
+      <footer>AHARIVA Hissab <span>•</span> Internal bookkeeping tool · Keep invoices and reconcile accounts regularly.</footer>
+    </main>
+  </div>
+
+  <dialog id="entry-dialog" class="modal">
+    <form id="entry-form" class="modal-form">
+      <div class="modal-header"><div><p class="eyebrow">BOOKKEEPING</p><h2>New entry</h2></div><button type="button" class="icon-button close-dialog" aria-label="Close">×</button></div>
+      <label>Entry type<select name="kind" id="entry-kind" required>
+        <option value="sale">Sale</option><option value="purchase">Purchase</option><option value="sales_return">Online / customer return</option><option value="expense">Expense</option><option value="partner_contribution">Partner contribution</option><option value="partner_withdrawal">Partner withdrawal</option><option value="transfer">Account transfer</option>
+      </select></label>
+      <div class="form-grid"><label>Date<input name="date" type="date" required></label><label id="entry-description-label">Description<input name="description" placeholder="e.g. 500g almond pouch" required></label></div>
+      <div class="entry-product-fields">
+        <label>Product<select name="product_id" id="entry-product" required><option value="">Select product</option></select></label>
+        <div class="form-grid">
+          <label>Quantity<input name="quantity" type="number" min="0.001" step="0.001" placeholder="0" required></label>
+          <label id="unit-price-label">Unit price (₹)<input name="unit_price" type="number" min="0" step="0.01"></label>
+        </div>
+      </div>
+      <div class="entry-amount-field hidden">
+        <div class="form-grid"><label id="amount-label">Amount (₹)<input name="amount" type="number" min="0.01" step="0.01"></label><label class="entry-tax-field">GST rate (%)<input name="gst_rate" type="number" min="0" max="100" step="0.01" value="0"></label></div>
+      </div>
+      <div class="entry-category-field hidden"><label>Expense category<select name="category"><option>Packaging material</option><option>Return shipping</option><option>Shipping & delivery</option><option>Marketplace fees</option><option>Rent & utilities</option><option>Marketing</option><option>Equipment</option><option>Other</option></select></label></div>
+      <div class="entry-channel-field"><label>Sales channel<select name="channel"><option>Local</option><option>Online - direct</option><option>Marketplace</option></select></label></div>
+      <div class="entry-partner-field hidden"><label>Partner name<input name="partner" placeholder="Partner name"></label></div>
+      <div class="entry-transfer-fields hidden"><div class="form-grid"><label>From account<select name="from_account" class="account-options"></select></label><label>To account<select name="to_account" class="account-options"></select></label></div></div>
+      <div class="entry-payment-field"><label id="payment-label">Received into<select name="payment_account" class="account-options"></select></label></div>
+      <label class="entry-restock-field hidden check-label"><input type="checkbox" name="restocked"> Returned product is suitable for restocking</label>
+      <label class="entry-credit-field hidden check-label"><input type="checkbox" name="gst_credit_eligible"> GST input credit eligible (confirm with accountant)</label>
+      <p id="entry-error" class="error-text"></p>
+      <div class="modal-actions"><button type="button" class="button outline close-dialog">Cancel</button><button class="button primary" type="submit">Save entry</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="product-dialog" class="modal">
+    <form id="product-form" class="modal-form">
+      <div class="modal-header"><div><p class="eyebrow">INVENTORY</p><h2>Add a product</h2></div><button type="button" class="icon-button close-dialog" aria-label="Close">×</button></div>
+      <label>Product name<input name="name" required placeholder="e.g. Premium almonds 500g"></label>
+      <div class="form-grid"><label>SKU<input name="sku" required placeholder="ALM-500"></label><label>GST rate (%)<input name="gst_rate" type="number" min="0" max="100" step="0.01" value="0" required></label></div>
+      <div class="form-grid"><label>Opening stock<input name="opening_stock" type="number" min="0" step="0.001" value="0" required></label><label>Avg. unit cost (₹)<input name="unit_cost" type="number" min="0" step="0.01" value="0" required></label></div>
+      <label>Selling price per unit (₹)<input name="sell_price" type="number" min="0" step="0.01" required></label>
+      <p class="helper-text">Opening stock is valued at the average unit cost shown here.</p>
+      <p id="product-error" class="error-text"></p>
+      <div class="modal-actions"><button type="button" class="button outline close-dialog">Cancel</button><button class="button primary" type="submit">Save product</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="opening-dialog" class="modal">
+    <form id="opening-form" class="modal-form">
+      <div class="modal-header"><div><p class="eyebrow">ACCOUNTS</p><h2>Set opening balance</h2></div><button type="button" class="icon-button close-dialog" aria-label="Close">×</button></div>
+      <p class="muted">Enter the balance as of the date you start using Hissab. This replaces the opening balance; it does not change recorded transactions.</p>
+      <label>Account<select name="account_key" class="account-options"></select></label>
+      <label>Opening balance (₹)<input name="amount" type="number" min="0" step="0.01" required></label>
+      <p id="opening-error" class="error-text"></p>
+      <div class="modal-actions"><button type="button" class="button outline close-dialog">Cancel</button><button class="button primary" type="submit">Save balance</button></div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
